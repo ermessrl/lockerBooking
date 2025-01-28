@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - BagLocker</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        // Initialize with stored language on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const storedLang = localStorage.getItem('selectedLanguage') || 'it';
+            changeLang(storedLang);
+        });
+    </script>
+    <style>
+        .privacy-container {
+            padding: 120px 20px 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .privacy-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .privacy-content h1 {
+            color: var(--primary-color);
+            margin-bottom: 30px;
+        }
+        .privacy-content h2 {
+            color: var(--secondary-color);
+            margin: 25px 0 15px;
+        }
+        .privacy-content p {
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+        .privacy-content ul {
+            margin-bottom: 20px;
+            padding-left: 20px;
+        }
+        .privacy-content li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+        .back-to-home {
+            display: inline-block;
+            margin: 20px 0;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-to-home:hover {
+            color: var(--secondary-color);
+        }
+        .top-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .language-flags {
+            display: flex;
+            align-items: center;
+        }
+        .flag-btn {
+            margin: 0 5px;
+            padding: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        .flag-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        .flag-btn:hover {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg fixed-top">
+            <div class="container-fluid">
+                <div class="logo">
+                    <a href="index.html">
+                        <img src="logo.png" alt="BagLocker Logo">
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="privacy-container">
+        <div class="top-section">
+            <a href="index.html" class="back-to-home">
+                <i class="fas fa-arrow-left"></i> 
+                <span data-it="Torna alla Home"
+                      data-en="Back to Home"
+                      data-fr="Retour à l'Accueil"
+                      data-de="Zurück zur Startseite"
+                      data-es="Volver al Inicio"
+                      data-zh="返回首页"
+                      data-ja="ホームに戻る"
+                      data-ru="Вернуться на главную">Torna alla Home</span>
+            </a>
+            
+            <div class="language-flags">
+                <button onclick="changeLang('it')" class="flag-btn" title="Italiano">🇮🇹</button>
+                <button onclick="changeLang('en')" class="flag-btn" title="English">🇬🇧</button>
+                <button onclick="changeLang('fr')" class="flag-btn" title="Français">🇫🇷</button>
+                <button onclick="changeLang('de')" class="flag-btn" title="Deutsch">🇩🇪</button>
+                <button onclick="changeLang('es')" class="flag-btn" title="Español">🇪🇸</button>
+                <button onclick="changeLang('zh')" class="flag-btn" title="中文">🇨🇳</button>
+                <button onclick="changeLang('ja')" class="flag-btn" title="日本語">🇯🇵</button>
+                <button onclick="changeLang('ru')" class="flag-btn" title="Русский">🇷🇺</button>
+            </div>
+        </div>
+        
+        <div class="privacy-content">
+            <h1 data-it="Regolamento Privacy" 
+                data-en="Privacy Policy"
+                data-fr="Politique de Confidentialité"
+                data-de="Datenschutzerklärung"
+                data-es="Política de Privacidad"
+                data-zh="隐私政策"
+                data-ja="プライバシーポリシー"
+                data-ru="Политика конфиденциальности">Regolamento Privacy</h1>
+
+            <h2 data-it="Informativa sulla Privacy" 
+                data-en="Privacy Notice"
+                data-fr="Avis de Confidentialité"
+                data-de="Datenschutzhinweis"
+                data-es="Aviso de Privacidad"
+                data-zh="隐私声明"
+                data-ja="プライバシー通知"
+                data-ru="Уведомление о конфиденциальности">Informativa sulla Privacy</h2>
+
+            <p data-it="Ai sensi dell'art. 13 del Regolamento UE 2016/679 (GDPR)"
+               data-en="Pursuant to art. 13 of EU Regulation 2016/679 (GDPR)"
+               data-fr="Conformément à l'art. 13 du règlement UE 2016/679 (GDPR)"
+               data-de="Gemäß Art. 13 der EU-Verordnung 2016/679 (GDPR)"
+               data-es="Según el art. 13 del Reglamento UE 2016/679 (GDPR)"
+               data-zh="根据欧盟法规2016/679（GDPR）第13条"
+               data-ja="EU規則2016/679（GDPR）第13条に従って"
+               data-ru="В соответствии со ст. 13 Регламента ЕС 2016/679 (GDPR)">
+                Ai sensi dell'art. 13 del Regolamento UE 2016/679 (GDPR)
+            </p>
+
+            <h2 data-it="Titolare del Trattamento" 
+                data-en="Data Controller"
+                data-fr="Responsable du Traitement"
+                data-de="Datenverantwortlicher"
+                data-es="Responsable del Tratamiento"
+                data-zh="数据控制者"
+                data-ja="データ管理者"
+                data-ru="Контролер данных">Titolare del Trattamento</h2>
+
+            <p data-it="Il Titolare del trattamento dei dati è BagLocker Clone, con sede in Via Santa Caterina da Siena, 1f - 50123 Firenze FI."
+               data-en="The Data Controller is BagLocker Clone, located in Via Santa Caterina da Siena, 1f - 50123 Florence FI."
+               data-fr="Le responsable du traitement des données est BagLocker Clone, situé Via Santa Caterina da Siena, 1f - 50123 Florence FI."
+               data-de="Der Datenverantwortliche ist BagLocker Clone mit Sitz in Via Santa Caterina da Siena, 1f - 50123 Florenz FI."
+               data-es="El Responsable del tratamiento de datos es BagLocker Clone, con sede en Via Santa Caterina da Siena, 1f - 50123 Florencia FI."
+               data-zh="数据控制者是BagLocker Clone，地址：Via Santa Caterina da Siena, 1f - 50123 佛罗伦萨 FI。"
+               data-ja="データ管理者は、Via Santa Caterina da Siena, 1f - 50123 フィレンツェ FIに所在するBagLocker Cloneです。"
+               data-ru="Контролером данных является BagLocker Clone, расположенный по адресу Via Santa Caterina da Siena, 1f - 50123 Флоренция FI.">
+                Il Titolare del trattamento dei dati è BagLocker Clone, con sede in Via Santa Caterina da Siena, 1f - 50123 Firenze FI.
+            </p>
+
+            <h2 data-it="Finalità del Trattamento" 
+                data-en="Purpose of Processing"
+                data-fr="Finalité du Traitement"
+                data-de="Zweck der Verarbeitung"
+                data-es="Finalidad del Tratamiento"
+                data-zh="处理目的"
+                data-ja="処理目的"
+                data-ru="Цель обработки">Finalità del Trattamento</h2>
+
+            <p data-it="I dati personali forniti saranno trattati per le seguenti finalità:"
+               data-en="The personal data provided will be processed for the following purposes:"
+               data-fr="Les données personnelles fournies seront traitées aux fins suivantes:"
+               data-de="Die bereitgestellten personenbezogenen Daten werden für folgende Zwecke verarbeitet:"
+               data-es="Los datos personales proporcionados serán tratados para los siguientes fines:"
+               data-zh="提供的个人数据将用于以下目的："
+               data-ja="提供された個人データは以下の目的で処理されます："
+               data-ru="Предоставленные персональные данные будут обрабатываться в следующих целях:">
+                I dati personali forniti saranno trattati per le seguenti finalità:
+            </p>
+
+            <ul>
+                <li data-it="Gestione del servizio di deposito bagagli"
+                    data-en="Management of luggage storage service"
+                    data-fr="Gestion du service de consigne à bagages"
+                    data-de="Verwaltung des Gepäckaufbewahrungsservice"
+                    data-es="Gestión del servicio de consigna de equipaje"
+                    data-zh="行李寄存服务管理"
+                    data-ja="手荷物保管サービスの管理"
+                    data-ru="Управление услугой хранения багажа">
+                    Gestione del servizio di deposito bagagli
+                </li>
+                <li data-it="Adempimento degli obblighi di legge"
+                    data-en="Compliance with legal obligations"
+                    data-fr="Respect des obligations légales"
+                    data-de="Einhaltung gesetzlicher Verpflichtungen"
+                    data-es="Cumplimiento de obligaciones legales"
+                    data-zh="遵守法律义务"
+                    data-ja="法的義務の遵守"
+                    data-ru="Соблюдение юридических обязательств">
+                    Adempimento degli obblighi di legge
+                </li>
+                <li data-it="Comunicazioni di servizio"
+                    data-en="Service communications"
+                    data-fr="Communications de service"
+                    data-de="Servicekommunikation"
+                    data-es="Comunicaciones de servicio"
+                    data-zh="服务通讯"
+                    data-ja="サービスコミュニケーション"
+                    data-ru="Служебные коммуникации">
+                    Comunicazioni di servizio
+                </li>
+            </ul>
+
+            <h2 data-it="Periodo di Conservazione" 
+                data-en="Retention Period"
+                data-fr="Période de Conservation"
+                data-de="Aufbewahrungszeitraum"
+                data-es="Período de Conservación"
+                data-zh="保留期限"
+                data-ja="保持期間"
+                data-ru="Срок хранения">Periodo di Conservazione</h2>
+
+            <p data-it="I dati saranno conservati per il tempo necessario agli scopi per i quali sono stati raccolti e in conformità con gli obblighi di legge applicabili."
+               data-en="The data will be kept for the time necessary for the purposes for which they were collected and in compliance with applicable legal obligations."
+               data-fr="Les données seront conservées pendant le temps nécessaire aux fins pour lesquelles elles ont été collectées et conformément aux obligations légales applicables."
+               data-de="Die Daten werden für die Zeit aufbewahrt, die für die Zwecke, für die sie erhoben wurden, erforderlich ist und in Übereinstimmung mit den geltenden gesetzlichen Verpflichtungen."
+               data-es="Los datos se conservarán durante el tiempo necesario para los fines para los que fueron recogidos y en cumplimiento de las obligaciones legales aplicables."
+               data-zh="数据将保留到收集目的所需的时间，并符合适用的法律义务。"
+               data-ja="データは収集目的に必要な期間、および適用される法的義務に従って保持されます。"
+               data-ru="Данные будут храниться в течение времени, необходимого для целей, для которых они были собраны, и в соответствии с применимыми юридическими обязательствами.">
+                I dati saranno conservati per il tempo necessario agli scopi per i quali sono stati raccolti e in conformità con gli obblighi di legge applicabili.
+            </p>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-bottom">
+            <p data-it=" 2024 BagLocker Clone. Tutti i diritti riservati." 
+               data-en=" 2024 BagLocker Clone. All rights reserved."
+               data-fr=" 2024 BagLocker Clone. Tous droits réservés."
+               data-de=" 2024 BagLocker Clone. Alle Rechte vorbehalten."
+               data-es=" 2024 BagLocker Clone. Todos los derechos reservados."
+               data-zh=" 2024 BagLocker Clone. 版权所有。"
+               data-ja=" 2024 BagLocker Clone. すべての権利は所有者に帰属します。"
+               data-ru=" 2024 BagLocker Clone. Все права защищены."> 2024 BagLocker Clone. Tutti i diritti riservati.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
