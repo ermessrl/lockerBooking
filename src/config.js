@@ -1,0 +1,1 @@
+export const USE_MOCK_DATA = true; // true for mockdata and false for API

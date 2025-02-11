@@ -1,5 +1,5 @@
 import React  from "react";
-
+import { Outlet, Link } from "react-router-dom";
 const Header = () => {
     return(
         <>
@@ -15,14 +15,14 @@ const Header = () => {
                         🌐
                     </button>
                     <ul className="dropdown-menu dropdown-menu-end">
-                        <li><button className="dropdown-item" onclick="changeLang('it')">🇮🇹 Italiano</button></li>
-                        <li><button className="dropdown-item" onclick="changeLang('en')">🇬🇧 English</button></li>
-                        <li><button className="dropdown-item" onclick="changeLang('fr')">🇫🇷 Français</button></li>
-                        <li><button className="dropdown-item" onclick="changeLang('de')">🇩🇪 Deutsch</button></li>
-                        <li><button className="dropdown-item" onclick="changeLang('es')">🇪🇸 Español</button></li>
-                        <li><button className="dropdown-item" onclick="changeLang('zh')">🇨🇳 中文</button></li>
-                        <li><button className="dropdown-item" onclick="changeLang('ja')">🇯🇵 日本語</button></li>
-                        <li><button className="dropdown-item" onclick="changeLang('ru')">🇷🇺 Русский</button></li>
+                        <li><button className="dropdown-item" >🇮🇹 Italiano</button></li>
+                        <li><button className="dropdown-item" >🇬🇧 English</button></li>
+                        <li><button className="dropdown-item" >🇫🇷 Français</button></li>
+                        <li><button className="dropdown-item" >🇩🇪 Deutsch</button></li>
+                        <li><button className="dropdown-item" >🇪🇸 Español</button></li>
+                        <li><button className="dropdown-item" >🇨🇳 中文</button></li>
+                        <li><button className="dropdown-item" >🇯🇵 日本語</button></li>
+                        <li><button className="dropdown-item" >🇷🇺 Русский</button></li>
                     </ul>
                 </div>
                 
@@ -33,7 +33,7 @@ const Header = () => {
                 <div className="collapse navbar-collapse" id="navbarNav">
                     <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                         <li className="nav-item">
-                            <a className="nav-link active" href="#home" data-it="HOME" data-en="HOME" data-fr="ACCUEIL" data-de="HOME" data-es="INICIO" data-zh="主页" data-ja="ホーム" data-ru="ГЛАВНАЯ">HOME</a>
+                            <Link className="nav-link active" to= "/landing" data-it="HOME" data-en="HOME" data-fr="ACCUEIL" data-de="HOME" data-es="INICIO" data-zh="主页" data-ja="ホーム" data-ru="ГЛАВНАЯ">HOME</Link>
                         </li>
                         <li className="nav-item">
                             <a className="nav-link" href="#chi-siamo" data-it="CHI SIAMO" data-en="ABOUT US" data-fr="QUI SOMMES-NOUS" data-de="ÜBER UNS" data-es="QUIÉNES SOMOS" data-zh="关于我们" data-ja="会社概要" data-ru="О НАС">CHI SIAMO</a>
@@ -50,22 +50,27 @@ const Header = () => {
                         <li className="nav-item">
                             <a className="nav-link" href="#contatti" data-it="CONTATTI" data-en="CONTACT" data-fr="CONTACT" data-de="KONTAKT" data-es="CONTACTO" data-zh="联系我们" data-ja="お問い合わせ" data-ru="КОНТАКТЫ">CONTATTI</a>
                         </li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/manageBooking"> MANAGE BOOKING</Link>
+                        </li>
                     </ul>
 
                     {/*} Language Selector for Desktop */}
+                    {/*onClick="changeLang('fr')"*/} 
                     <div className="language-selector d-none d-lg-flex">
-                        <button onclick="changeLang('it')" className="lang-btn active" title="Italiano">🇮🇹</button>
-                        <button onclick="changeLang('en')" className="lang-btn" title="English">🇬🇧</button>
-                        <button onclick="changeLang('fr')" className="lang-btn" title="Français">🇫🇷</button>
-                        <button onclick="changeLang('de')" className="lang-btn" title="Deutsch">🇩🇪</button>
-                        <button onclick="changeLang('es')" className="lang-btn" title="Español">🇪🇸</button>
-                        <button onclick="changeLang('zh')" className="lang-btn" title="中文">🇨🇳</button>
-                        <button onclick="changeLang('ja')" className="lang-btn" title="日本語">🇯🇵</button>
-                        <button onclick="changeLang('ru')" className="lang-btn" title="Русский">🇷🇺</button>
+                        <button className="lang-btn active" title="Italiano">🇮🇹</button>
+                        <button className="lang-btn" title="English">🇬🇧</button>
+                        <button className="lang-btn" title="Français">🇫🇷</button>
+                        <button className="lang-btn" title="Deutsch">🇩🇪</button>
+                        <button className="lang-btn" title="Español">🇪🇸</button>
+                        <button className="lang-btn" title="中文">🇨🇳</button>
+                        <button className="lang-btn" title="日本語">🇯🇵</button>
+                        <button className="lang-btn" title="Русский">🇷🇺</button>
                     </div>
                 </div>
             </div>
         </nav>
+        <Outlet/>
         </>
     );
 };

@@ -1,5 +1,5 @@
-import React, {useState} from "react";
-import { Link } from "react-router-dom";
+import React from "react";
+//import { Link } from "react-router-dom";
 
 const Footer = () => {
     return(
@@ -15,8 +15,7 @@ const Footer = () => {
                     data-zh="联系我们"
                     data-ja="お問い合わせ"
                     data-ru="КОНТАКТЫ">Contatti</h4>
-                <p><i className="fas fa-phone"></i> +39 347 715 2409</p>
-                <p><i className="fas fa-phone"></i> +39 331 648 8471</p>
+                <p><i className="fas fa-phone"></i> +39 347 715 2409, +39 331 648 8471</p>
                 <p><i className="fas fa-envelope"></i> f.baglockers.a@gmail.com</p>
                 <p><i className="fas fa-map-marker-alt"></i> Via Santa Caterina da Siena, 1f - 50123 Firenze FI</p>
             </div>
@@ -53,7 +52,7 @@ const Footer = () => {
                     <a href="#"><i className="fab fa-instagram"></i></a>
                     <a href="#"><i className="fab fa-whatsapp"></i></a>
                 </div>
-            </div>
+            </div>  
             <div className="footer-section">
                 <h4 data-it="Regolamento Privacy" 
                     data-en="Privacy"

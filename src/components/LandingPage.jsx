@@ -1,86 +1,83 @@
-import React from "react";
-import '@fortawesome/fontawesome-free/css/all.min.css';
-import { Route, Routes, useNavigate } from "react-router-dom";
-import ReservationPage from './ReservationPage';
+import React, { useState, useEffect } from "react";
+import { mockLockers } from "../api/mockData";  // Import the mock data
+import { Outlet, useNavigate } from "react-router-dom";
+import { USE_MOCK_DATA } from "../config";
 
-// Continue Button Component
-function LandingPageSection() {
-  const navigate = useNavigate();
 
-  const handleButtonClick = () => {
-    navigate("/reserve");
-  };
-
-  return (
-    <button
-      className="cta-button"
-      onClick={handleButtonClick}
-      data-it="CONTINUA"
-      data-en="CONTINUE"
-      data-fr="CONTINUER"
-      data-de="WEITERMACHEN"
-      data-es="CONTINUAR"
-      data-zh="继续"
-      data-ja="続く"
-      data-ru="ПРОДОЛЖАТЬ"
-    >
-      CONTINUE
-    </button>
-  );
-}
+const DEFAULT_PAGE = 1;  
+const DEFAULT_PAGE_SIZE = 3;
 
 function LandingPage() {
+  const navigate = useNavigate();
+  const [lockers, setLockers] = useState([]);
+  const [currentPage, setCurrentPage] = useState(DEFAULT_PAGE);
+  const [selectedLocker,setSelectedLocker] = useState(null);
+  useEffect(() => {
+    if (USE_MOCK_DATA) {
+      setLockers(mockLockers);
+    } else {
+      // Fetch from API
+      fetch("/api/lockers")
+        .then(response => response.json())
+        .then(data => setLockers(data))
+        .catch((error) => console.error("Error fetching data:", error));
+    }
+  }, []);  
+
+  const handleLockerClick = (locker) => {
+    setSelectedLocker(locker);
+    navigate("reserve", { state: { selectedLocker: locker } });
+  };
+
+  /*const handleContinueClick = () => {
+    if (selectedLocker) {
+      navigate("reserve", { state: { selectedLocker } });
+    } else {
+      alert("Please select a locker before continuing.");
+    }
+  };*/
+
+  //choose which lockers to display
+  const indexOfLastLocker = currentPage*DEFAULT_PAGE_SIZE; //3,6,..
+  const indexOfFirstLocker = indexOfLastLocker - DEFAULT_PAGE_SIZE;//0,3,..
+  const currentLockers =  lockers.slice(indexOfFirstLocker,indexOfLastLocker);
+  const handlePageChange = (pageNumber) =>{
+    setCurrentPage(pageNumber);
+  };
+  // to decide how many pages to display inorder to accomodate the lockers available.
+  const totalPages = Math.ceil(lockers.length/DEFAULT_PAGE_SIZE);
+  const pageNumbers = [];
+  for (let i = 1; i <= totalPages; i++) {
+    pageNumbers.push(i);
+  }
   return (
-    <>
-      <div className="landing">
-        {/* First Paragraph */}
-        <p>
-          Worried about carrying luggages everywhere you go? We are here to take care of your luggages while you wander hassle-free.
-        </p>
-
-        {/* Boxes Section */}
-        <div className="boxes-container">
-          <div className="box" onClick={() => alert('Locker 1 clicked')}>
-            <p className="box-title">Locker 1</p>
-            <p><i className="fa-solid fa-clock icon"></i>Open : 00:00 - 23:59</p>
-            <p><i className="fa-solid fa-location-dot icon"></i>Bologna</p>
-            <p><i className="fa-solid fa-building icon"></i>Bologna Centrale, Piazza delle Medaglie d'Oro, 40121 BO</p>
+    <div className="landing">
+      <h4><strong>Worried about carrying luggages everywhere you go? We are here to take care of your luggages while you wander hassle-free.</strong></h4>
+      {/* Second Paragraph */}<br/>
+      <h4><strong>Book your lockers online and get yourself a guaranteed locker now. Select a locker and proceed.</strong></h4><br/>
+      <div className="boxes-container">
+        {/* Display lockers */}
+        {currentLockers.map((locker) => (
+          <div key={locker.lockerCode} className={`box ${selectedLocker?.lockerCode === locker.lockerCode ? 'active' : ''}`} onClick={() => handleLockerClick(locker)}>
+            <h3>{locker.lockerName}</h3>
+            <p><i className="fa-solid fa-clock icon"></i><strong>Open:</strong> {locker.openingTime} - {locker.closingTime}</p>
+            <p><i className="fa-solid fa-location-dot icon"></i> {locker.city}</p>
+            <p><i className="fa-solid fa-building icon"></i> {locker.address}</p>
           </div>
-          <div className="box" onClick={() => alert('Locker 2 clicked')}>
-            <p className="box-title">Locker 2</p>
-            <p><i className="fa-solid fa-clock icon"></i>Open : 06:00 - 00:00</p>
-            <p><i className="fa-solid fa-location-dot icon"></i>Bologna</p>
-            <p><i className="fa-solid fa-building icon"></i>Via G. Grassilli, 11, 40012 Calderara di Reno BO</p>
-          </div>
-          <div className="box" onClick={() => alert('Locker 3 clicked')}>
-            <p className="box-title">Locker 3</p>
-            <p><i className="fa-solid fa-clock icon"></i>Open : 08:00 - 22:00</p>    
-            <p><i className="fa-solid fa-location-dot icon"></i>Bologna</p>
-            <p><i className="fa-solid fa-building icon"></i>Bologna Autostazione, 40126 Bologna BO</p>
-          </div>
-        </div>
-
-        {/* Pagination Section */}
-        <div className="pagination">
-          <button className="pagination-button">1</button>
-          <button className="pagination-button">2</button>
-          <button className="pagination-button">3</button>
-        </div>
-
-        {/* Second Paragraph */}
-        <p>
-          Book your lockers online and get yourself a guaranteed locker now. Select a locker and proceed.
-        </p>
-
-        {/* Continue Button */}
-        <LandingPageSection />
-
-        {/* Routes */}
-        <Routes>
-          <Route path="/reserve" element={<ReservationPage />} />
-        </Routes>
+        ))}
       </div>
-    </>
+      
+      {/*Pagination */}
+      <div className="pagination">
+      {pageNumbers.map((number) => (
+        <button key = {number} className={`pagination-button ${number === currentPage ? 'active' : ''}`} onClick={()=>handlePageChange(number)}>
+          {number}
+        </button>
+        
+      ))}
+      </div>
+      <Outlet/>
+    </div>
   );
 }
 

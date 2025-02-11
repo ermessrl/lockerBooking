@@ -1,9 +1,14 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes, useNavigate } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, useNavigate, Outlet } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import LandingPage from "./components/LandingPage";
-import "@fortawesome/fontawesome-free/css/all.min.css";
+import ReservationPage from "./components/ReservationPage";
+import PersonalDetailsPage from "./components/PersonalDetailsPage";
+import ConfirmationDetailsPage from "./components/ConfirmationDetailsPage";
+import { ReservationProvider } from "./components/ReservationContext";
+import { PersonalDetailsProvider} from "./components/PersonalDetailsContext";
+import ManageBookingPage from "./components/ManageBookingPage";
 
 // Body Component
 function BodySection() {
@@ -62,17 +67,47 @@ function BodySection() {
 // App Component
 function App() {
   return (
+    <ReservationProvider>
+    <PersonalDetailsProvider>
     <Router>
-      <Header />
-      <main>
-        <Routes>
-          <Route path="/" element={<BodySection />} />
-          <Route path="/landing" element={<LandingPage />} />
-        </Routes>
-      </main>
-      <Footer />
-    </Router>
+    <Header />
+    <main className="container-new">
+      <Routes>
+        <Route path="/" element={<BodySection />} />
+        {/* Landing Page */}
+        <Route path="/landing" element={<LandingLayout />}>
+          <Route index element={<LandingPage />} />
+
+          {/* Reservation Section */}
+          <Route path="reserve" element={<ReservationLayout />}>
+            <Route index element={<ReservationPage />} />
+            
+            {/* Personal Details Section */}
+            <Route path="personaldetails" element={<PersonalDetailsLayout />}>
+              <Route index element={<PersonalDetailsPage />} />
+
+              {/* Print details Page */}
+              <Route path="confirmationdetails" element={<ConfirmationDetailsLayout/>}>
+                <Route index element={<ConfirmationDetailsPage/>}/>
+              </Route>
+
+            </Route>
+
+          </Route>
+
+        </Route>
+        {/* Manage booking Page */}
+        <Route path="/manageBooking" element={<ManageBookingPage />} /> 
+      </Routes>
+    </main>
+    <Footer />
+  </Router>
+  </PersonalDetailsProvider>
+  </ReservationProvider>
   );
 }
-
+const LandingLayout = () => <Outlet />;
+const ReservationLayout = () => <Outlet />;
+const PersonalDetailsLayout = () => <Outlet/>;
+const ConfirmationDetailsLayout = () => <Outlet/>;
 export default App;

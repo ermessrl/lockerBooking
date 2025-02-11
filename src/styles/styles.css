@@ -13,17 +13,10 @@
     --light-gray: #f5f5f5;
     --dark-gray: #666;
 }
-
-/* Body styling */
-body {
-    background-color: #333; /* Dark background */
-    color: var(--text-color); /* White text */
-    font-family: 'Roboto', sans-serif;
-    line-height: 1.6;
-}
-
+/**Header**/
 /* Navbar */
 .navbar {
+    flex-shrink: 0;
     background: white;
     padding: 1rem 2rem;
     position: fixed;
@@ -87,96 +80,6 @@ body {
         background-color: var(--light-gray);
     }
 }
-
-/* Body Section */
-.hero {
-    height: 100vh;
-    background-image: url('../../public/fi-bg.jpg');
-    background-size: cover;
-    background-position: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    color: white;
-    padding: 0 1rem;
-}
-
-.hero-content h1 {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-}
-
-.hero-content p {
-    font-size: 1.5rem;
-    margin-bottom: 2rem;
-}
-
-/* Footer */
-.footer-body {
-    background-color: #333; /* Dark background for footer */
-    color: white; /* White text color */
-    padding: 3rem 5% 2rem;
-}
-
-.footer-content {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 2rem;
-    margin-bottom: 2rem;
-}
-
-.footer-section h4 {
-    margin-bottom: 1rem;
-}
-
-.social-links a {
-    color: white;
-    margin-right: 1rem;
-    font-size: 1.5rem;
-    transition: color 0.3s;
-}
-
-.social-links_1 a {
-    color: white;
-    margin-right: 1rem;
-    font-size: 1.0rem;
-    transition: color 0.3s;
-}
-
-.social-links a:hover {
-    color: var(--primary-color);
-}
-
-.footer-bottom {
-    text-align: center;
-    padding-top: 2rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-/*for mobile*/
-
-.dropdown-toggle {
-    background: none;
-    border: none;
-    font-size: 1.5em;
-}
-.dropdown-toggle::after {
-    display: none;
-}
-.dropdown-menu {
-    min-width: 200px;
-    padding: 0.5rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-.dropdown-item {
-    padding: 0.7rem 1rem;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
-}
-.dropdown-item:hover {
-    background-color: var(--light-gray);
-}
 /* Navbar toggler */
 .navbar-toggler {
     border: none;
@@ -187,54 +90,57 @@ body {
 .navbar-toggler:focus {
     box-shadow: none;
 }
-/*button*/
-.cta-button {
-    display: inline-block;
-    padding: 1rem 2rem;
-    background: var(--primary-color);
+/**Header ends**/
+/**Body**/
+.container-new{
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+/* Body Section */
+.hero {
+    flex-grow: 1;
+    background-image: url('../../public/fi-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
     color: white;
-    text-decoration: none;
-    border-radius: 5px;
-    transition: background 0.3s;
+    margin-top: 75px;
+    padding: 30px 50px 0px; /*top, left-right, bottom*/
+}
+.hero-content h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
 }
 
-.cta-button:hover {
-    background: var(--secondary-color);
+.hero-content p {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
 }
+/*landing*/
 /*Landing Page*/
 .landing {
     display: flex;
+    flex:1;
     flex-direction: column; /* Stack elements vertically */
     align-items: center;    /* Center align items horizontally */
-    gap: 1rem;              /* Space between items */
-    padding: 150px;          /* Optional: Add padding around the container */
+    gap: 1rem; /* Space between items */
+    margin-top: 75px;
+    padding-top: 3rem;
     background-color: #EBF3E8;
     font-size: large;
     font-weight:normal;
-  }
-/*
-  .boxes-container {
-    display: flex;
-    flex-direction: row; 
-    gap: 1rem;              
-    width: 100%;            
-    max-width: 600px;       
-  }
-
-  .box {
-    padding: 1rem;
-    border: 1px solid #ccc;
-    background-color: #f9f9f9;
-    text-align: center;
-    border-radius: 8px;
-  }
-    */
+    width: 100%;
+}
 .boxes-container {
 display: flex;
 flex-direction: row; /* Stack boxes horizontally */
-gap: 1rem;              /* Space between boxes */
+gap: 3rem;               /* Space between boxes */
 width: 100%;            /* Container takes full width */
-max-width: 800px;       /* Optional: Limit container width */
+max-width: 1000px;       /* Optional: Limit container width */
 margin: 0 auto;         /* Center align the container */
 }
 
@@ -257,28 +163,32 @@ width: 300px;
 transform: scale(1.03);
 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
-.box-title {
-    font-weight: bolder; 
-    margin-bottom: 1rem; 
-    font-size: larger;
-}
 .box p {
 display: flex;
 align-items: left;    
 gap: 0.5rem;            
 margin: 0.2rem 0;      
 }
+.box.active{
+    scale: 1.2;
+}
 .icon {
     font-size: 1.2rem;
     color: #007bff;
     margin-top: 5px;  
   }
+.icon:hover {
+    color: #050000;
+  }
+
+/*pagination*/
 .pagination {
 display: flex;
 gap: 0.5rem; 
 margin: 1rem 0;
+position: relative; /* Ensures it's inside .landing */
+bottom: 0;
 }
-
 .pagination-button {
 padding: 0.5rem 1rem;
 border: none;
@@ -287,8 +197,236 @@ color: white;
 border-radius: 4px;
 cursor: pointer;
 }
-
 .pagination-button:hover {
-background-color: #0056b3;
+background-color: #150ea3;
 }
+.pagination-button.active {
+    background-color: #6a0db1 !important;
+    color: white !important;
+}
+/*landing ends*/
+/*reservation*/
+/*date-time-container*/
+.box_reservation_details{
+    gap: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+.box_datetime{
+    gap: 1rem;
+    display: flex;
+    flex-direction: row;
+    z-index: 1;
+}
+.container {
+    display: flex;
+    flex-direction: column; /* Stack boxes vertically */
+    gap: 20px;
+    width: 500px;
+    margin: auto;
+  }
+  .container-new{
+    flex:1;
+    overflow: auto;
+  }
+.counter-group {
+    display: flex;
+    align-items: left;
+    gap: 10px;
+}
+.details-display{
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+.dimension-label {
+    width: 80px; /* Adjust width to align all labels */
+    font-weight: bold;
+}
+.price {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+.total-summary {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    text-align: left;
+    gap: 2rem;
+}
+.summary-label{
+    width: 150px;
+}
+.icon-large{
+    font-size: 50px;
+    padding-top: 2rem;
+}
+
+/*reservation ends*/
+/*confirmation page*/
+.confirm-layout{
+    display:flex;
+    flex-direction:column;
+    gap:2rem;
+    width: 80%;
+}
+.confirm-top{
+    display:flex;
+    flex-direction:row;
+    gap:30rem;
+    width:100%;
+}
+.confirm-content{
+    display:flex;
+    flex-direction:row;
+    gap:3rem;
+    width:100%;
+}
+/*button*/
+.cta-button {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background: var(--primary-color);
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background 0.3s;
+}
+
+.cta-button:hover {
+    background: var(--secondary-color);
+}
+.cnt-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.cnt-button:hover {
+    background: var(--secondary-color);
+}
+.dialog-button {
+    margin-top: 1rem;
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 0.7rem 1.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+  }
   
+  .dialog-button:hover {
+    background: #007bff;
+  }
+  /*dialog*/
+.dialog-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .dialog-box {
+    background: white;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    width: 400px;
+  }
+  
+  .dialog-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+  .box-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 90%;
+  }
+  
+  .box-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #f9f9f9;
+  }
+ /*dialog ends*/ 
+  .counter-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  
+  .count {
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+ 
+
+/**Body ends**/
+/** Footer **/
+.footer-body {
+    background-color: #333; /* Dark background for footer */
+    color: white; /* White text color */
+    padding-right: 0px;
+    padding-left: 80px;
+    padding-top: 20px;
+    padding-bottom: 0px;
+    font-size: 1 rem;
+}
+
+.footer-content {
+    display: flex;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10rem;
+    margin-bottom: 0.5rem;
+}
+
+.footer-section h4 {
+    margin-bottom: 0.5rem;
+}
+
+.social-links a {
+    color: white;
+    margin-right: 1rem;
+    font-size: 1.5rem;
+    transition: color 0.3s;
+}
+
+.social-links_1 a {
+    color: white;
+    margin-right: 1rem;
+    font-size: 1.0rem;
+    transition: color 0.3s;
+}
+
+.social-links a:hover {
+    color: var(--primary-color);
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    font-size: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+/**Footer ends**/
