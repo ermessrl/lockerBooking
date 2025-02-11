@@ -46,12 +46,7 @@ function ManageBookingPage() {
     {lockerCode: "Test-Locker-001", timestamp:"2024-04-21T12:00:00", unlockIdentifier: "+391234567890",unlockPin: "12345678"},
   ];
   const [dropDate, dropTime] = rBooking[0].timestamp.split("T");
-  const filteredBooking = userBookings.filter(uBooking => 
-    uBooking.lockerCode === rBooking[0].lockerCode &&
-    uBooking.checkInDate === rBooking[0].timestamp &&
-    uBooking.unlockIdentifier === rBooking[0].unlockIdentifier &&
-    uBooking.unlockPin === rBooking[0].unlockPin
-  );
+  const [filteredBookings, setFilteredBookings] = useState([]);
   const [pickUpDate, setPickUpDate] = useState(null);
   const [pickUpTime, setPickUpTime] = useState(null);
   const [finalPrice, setFinalPrice] = useState(null);
@@ -60,17 +55,21 @@ function ManageBookingPage() {
   const [unlockCode, setUnlockCode] = useState(null);
   const [dimension, setDimension] = useState(null);
   useEffect(() => {
-    if (filteredBooking.length > 0) {
-      const [date, time] = filteredBooking[0]?.checkInDate.split("T");
-      setPickUpDate(date);
-      setPickUpTime(time);
-      setFinalPrice(filteredBooking[0]?.finalPrice);
-      setCustomerEmail(filteredBooking[0]?.customerEmail);
-      setCustomerPhoneNumber(filteredBooking[0]?.customerPhoneNumber);
-      setUnlockCode(filteredBooking[0]?.unlockPin);
-      setDimension(filteredBooking[0]?.dimension);
-    }
-  }, [filteredBooking]);
+    setFilteredBookings(userBookings.filter(uBooking => 
+      uBooking.unlockIdentifier === rBooking[0].unlockIdentifier));
+  }, [userBookings]);
+  // useEffect(() => {
+  //   if (filteredBooking.length > 0) {
+  //     const [date, time] = filteredBooking[0]?.checkInDate.split("T");
+  //     setPickUpDate(date);
+  //     setPickUpTime(time);
+  //     setFinalPrice(filteredBooking[0]?.finalPrice);
+  //     setCustomerEmail(filteredBooking[0]?.customerEmail);
+  //     setCustomerPhoneNumber(filteredBooking[0]?.customerPhoneNumber);
+  //     setUnlockCode(filteredBooking[0]?.unlockPin);
+  //     setDimension(filteredBooking[0]?.dimension);
+  //   }
+  // }, [filteredBooking]);
   const handleDelete = () => {
     alert('Deleted');
   }
@@ -99,12 +98,14 @@ function ManageBookingPage() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                      <StyledTableRow >
-                      <StyledTableCell component="th" scope="row">{unlockCode}</StyledTableCell>
-                      <StyledTableCell align="left">{customerPhoneNumber}</StyledTableCell>
-                      <StyledTableCell align="left">{dimension}</StyledTableCell>
+                      {filteredBookings.map((booking, index)=>(
+                      <StyledTableRow key={index}>
+                      <StyledTableCell component="th" scope="row">{booking.unlockPin}</StyledTableCell>
+                      <StyledTableCell align="left">{booking.customerPhoneNumber}</StyledTableCell>
+                      <StyledTableCell align="left">{booking.dimension}</StyledTableCell>
                       <StyledTableCell align="left"><i className="fa-solid fa-trash-can icon" onClick={() =>{handleDelete()}}></i></StyledTableCell>
                       </StyledTableRow>
+                      ))}
                     </TableBody>
                 </Table>
             </TableContainer>
