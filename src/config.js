@@ -1,1 +1,1 @@
-export const USE_MOCK_DATA = true; // true for mockdata and false for API
+export const USE_MOCK_DATA = false; // true for mockdata and false for API

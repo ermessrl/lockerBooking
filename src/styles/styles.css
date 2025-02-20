@@ -134,29 +134,39 @@
     font-size: large;
     font-weight:normal;
     width: 100%;
+    flex-wrap: wrap;
+    justify-content: space-between;
 }
 .boxes-container {
-display: flex;
-flex-direction: row; /* Stack boxes horizontally */
-gap: 3rem;               /* Space between boxes */
-width: 100%;            /* Container takes full width */
-max-width: 1000px;       /* Optional: Limit container width */
-margin: 0 auto;         /* Center align the container */
+    display: flex;
+    flex-direction: row; /* Stack boxes horizontally */
+    gap: 3rem;               /* Space between boxes */
+    width: 100%;            /* Container takes full width */
+    max-width: 1000px;       /* Optional: Limit container width */
+    margin: 0 auto;         /* Center align the container */
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+.boxes-container.one-locker {
+    justify-content: center;
 }
 
+.boxes-container.two-lockers {
+    justify-content: space-evenly;
+}
 .box {
-display: flex;
-flex-direction: column;
-justify-content: space-between;
-padding: 1rem;
-border: 1px solid #ccc;
-background-color: #f9f9f9;
-text-align: left;
-border-radius: 8px;
-cursor: pointer;       
-transition: transform 0.2s ease, box-shadow 0.2s ease;
-height: 300px;          
-width: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    text-align: left;
+    border-radius: 8px;
+    cursor: pointer;       
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    height: 300px;          
+    width: 300px;
 }
 
 .box:hover {
@@ -211,12 +221,15 @@ background-color: #150ea3;
     gap: 1rem;
     display: flex;
     flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-between;
 }
 .box_datetime{
     gap: 1rem;
     display: flex;
     flex-direction: row;
     z-index: 1;
+    
 }
 .container {
     display: flex;
@@ -282,6 +295,9 @@ background-color: #150ea3;
     flex-direction:row;
     gap:3rem;
     width:100%;
+}
+.confirm-label{
+    width: 70px;
 }
 /*button*/
 .cta-button {

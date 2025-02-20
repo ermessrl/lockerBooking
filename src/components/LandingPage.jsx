@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { mockLockers } from "../api/mockData";  // Import the mock data
+import { mockLockers } from "../../src/api/mockData";  // Import the mock data
 import { Outlet, useNavigate } from "react-router-dom";
-import { USE_MOCK_DATA } from "../config";
-
+import { USE_MOCK_DATA } from "../../src/config";
+import axios from 'axios';
 
 const DEFAULT_PAGE = 1;  
 const DEFAULT_PAGE_SIZE = 3;
@@ -16,11 +16,19 @@ function LandingPage() {
     if (USE_MOCK_DATA) {
       setLockers(mockLockers);
     } else {
-      // Fetch from API
-      fetch("/api/lockers")
-        .then(response => response.json())
-        .then(data => setLockers(data))
-        .catch((error) => console.error("Error fetching data:", error));
+      const fetchData = async () => {
+        try {
+          const response = await axios.get('https://dev.ermes-srv.com/test_priyanka/be/v8/locker/list');
+          const filteredLockers = response.data.data.filter(
+            (locker) => locker.onlineBooking === true
+          );
+          setLockers(filteredLockers);
+          console.log('Filtered Lockers:', filteredLockers);
+        } catch (err) {
+          console.log('error', err);
+        }
+      };
+      fetchData();  
     }
   }, []);  
 
@@ -55,14 +63,16 @@ function LandingPage() {
       <h4><strong>Worried about carrying luggages everywhere you go? We are here to take care of your luggages while you wander hassle-free.</strong></h4>
       {/* Second Paragraph */}<br/>
       <h4><strong>Book your lockers online and get yourself a guaranteed locker now. Select a locker and proceed.</strong></h4><br/>
-      <div className="boxes-container">
+      <div className={`boxes-container ${currentLockers.length === 1? 'one-locker': currentLockers.length === 2? 'two-lockers': ''}`}>
         {/* Display lockers */}
         {currentLockers.map((locker) => (
           <div key={locker.lockerCode} className={`box ${selectedLocker?.lockerCode === locker.lockerCode ? 'active' : ''}`} onClick={() => handleLockerClick(locker)}>
             <h3>{locker.lockerName}</h3>
             <p><i className="fa-solid fa-clock icon"></i><strong>Open:</strong> {locker.openingTime} - {locker.closingTime}</p>
-            <p><i className="fa-solid fa-location-dot icon"></i> {locker.city}</p>
-            <p><i className="fa-solid fa-building icon"></i> {locker.address}</p>
+            <p><i className="fa-solid fa-location-dot icon"></i> {locker.city} </p>
+            <p><i className="fa-solid fa-building icon"></i> {locker.address} </p>
+            <p><i className="fa-solid fa-phone icon"></i> {locker.lockerPhone} </p>
+            <p><i className="fa-solid fa-envelope icon"></i> {locker.lockerEmail} </p>
           </div>
         ))}
       </div>

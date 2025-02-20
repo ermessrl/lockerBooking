@@ -8,8 +8,9 @@ import PersonalDetailsPage from "./components/PersonalDetailsPage";
 import ConfirmationDetailsPage from "./components/ConfirmationDetailsPage";
 import { ReservationProvider } from "./components/ReservationContext";
 import { PersonalDetailsProvider} from "./components/PersonalDetailsContext";
+import { LoginDetailsProvider } from "./components/LoginDetailsContext";
 import ManageBookingPage from "./components/ManageBookingPage";
-
+import LoginPage from "./components/LoginPage";
 // Body Component
 function BodySection() {
   const navigate = useNavigate();
@@ -69,39 +70,41 @@ function App() {
   return (
     <ReservationProvider>
     <PersonalDetailsProvider>
+    <LoginDetailsProvider>
     <Router>
-    <Header />
-    <main className="container-new">
-      <Routes>
-        <Route path="/" element={<BodySection />} />
-        {/* Landing Page */}
-        <Route path="/landing" element={<LandingLayout />}>
-          <Route index element={<LandingPage />} />
-
-          {/* Reservation Section */}
-          <Route path="reserve" element={<ReservationLayout />}>
-            <Route index element={<ReservationPage />} />
+      <Header />
+      <main className="container-new">
+        <Routes>
+          {/* Landing Page */}
+          <Route path="/" element={<BodySection />} />
+          <Route path="/landing" element={<LandingLayout />}>
+            <Route index element={<LandingPage />} />
             
-            {/* Personal Details Section */}
-            <Route path="personaldetails" element={<PersonalDetailsLayout />}>
-              <Route index element={<PersonalDetailsPage />} />
+            {/* Reservation Section */}
+            <Route path="reserve" element={<ReservationLayout />}>
+              <Route index element={<ReservationPage />} />
+              
+              {/* Personal Details Section */}
+              <Route path="personaldetails" element={<PersonalDetailsLayout />}>
+                <Route index element={<PersonalDetailsPage />} />
 
-              {/* Print details Page */}
-              <Route path="confirmationdetails" element={<ConfirmationDetailsLayout/>}>
-                <Route index element={<ConfirmationDetailsPage/>}/>
+                {/* Print details Page */}
+                <Route path="confirmationdetails" element={<ConfirmationDetailsLayout />}>
+                  <Route index element={<ConfirmationDetailsPage />} />
+                </Route>
               </Route>
-
             </Route>
-
           </Route>
-
-        </Route>
-        {/* Manage booking Page */}
-        <Route path="/manageBooking" element={<ManageBookingPage />} /> 
-      </Routes>
-    </main>
-    <Footer />
-  </Router>
+          {/* LOGIN SECTION (NOW WITH NESTED ROUTES) */}
+          <Route path="/login" element={<LoginLayout />}>
+            <Route index element={<LoginPage />} />
+            <Route path="manageBooking" element={<ManageBookingPage />} />  
+          </Route>
+        </Routes>
+      </main>
+      <Footer />
+    </Router>
+  </LoginDetailsProvider>
   </PersonalDetailsProvider>
   </ReservationProvider>
   );
@@ -110,4 +113,5 @@ const LandingLayout = () => <Outlet />;
 const ReservationLayout = () => <Outlet />;
 const PersonalDetailsLayout = () => <Outlet/>;
 const ConfirmationDetailsLayout = () => <Outlet/>;
+const LoginLayout = () => <Outlet/>;
 export default App;

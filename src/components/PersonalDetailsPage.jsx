@@ -12,6 +12,8 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { TextField } from "@mui/material";
 import dayjs from "dayjs";
+import Swal from "sweetalert2";
+import axios from "axios";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -36,41 +38,42 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 function PersonalDetailsPage() {
     const {reservationData, setReservationData } = useContext(ReservationContext);
     const {setPersonalData} = useContext(PersonalDetailsContext);
-    const [reservationCodes, setReservationCodes] = useState([]);
+    const [userBooking, setUserBooking] = useState([]);
     useEffect(() => {
         const storedData = localStorage.getItem("reservationData");
         if (storedData) {
             setReservationData(JSON.parse(storedData));
     }
     }, [setReservationData]);
-    const generateReservationCodes = (counts) => {
-        let codes = [];
-        Object.keys(counts).forEach((dimension) => {
-          for (let i = 0; i < counts[dimension]; i++) {
-            codes.push({
-              code: `${Math.floor(Math.random() * 100000000)}`.padStart(8, "0"),
-              dimension: dimension,
-            });
-          }
-        });
-        return codes;
-      };
+    // const generateReservationCodes = (counts) => {
+    //     let codes = [];
+    //     Object.keys(counts).forEach((dimension) => {
+    //       for (let i = 0; i < counts[dimension]; i++) {
+    //         codes.push({
+    //           code: `${Math.floor(Math.random() * 100000000)}`.padStart(8, "0"),
+    //           dimension: dimension,
+    //         });
+    //       }
+    //     });
+    //     return codes;
+    //   };
     
-      useEffect(() => {
-        if (reservationData && reservationData.counts) {
-            console.log(reservationData.counts);
-          setReservationCodes(generateReservationCodes(reservationData.counts));
-        }
-      }, [reservationData]);
-    const formattedDropDate = dayjs(reservationData.selectedDropDate).format("DD/MM/YY");
-    const formattedDropTime = dayjs(reservationData.selectedDropTime).format("h:mm A");
-    const formattedPickUpDate = dayjs(reservationData.selectedPickUpDate).format("DD/MM/YY");
-    const formattedPickUpTime = dayjs(reservationData.selectedPickUpTime).format("h:mm A");
+      // useEffect(() => {
+      //   if (reservationData && reservationData.counts) {
+      //       console.log(reservationData.counts); //{SMALL: 3, MEDIUM: 3, LARGE: 1}
+      //     setReservationCodes(generateReservationCodes(reservationData.counts));
+      //   }
+      // }, [reservationData]);
+    const formattedDropDate = dayjs(reservationData.checkInDate).format("DD/MM/YY");
+    const formattedDropTime = dayjs(reservationData.checkInDate).format("HH:mm");
+    const formattedPickUpDate = dayjs(reservationData.checkOutDate).format("DD/MM/YY");
+    const formattedPickUpTime = dayjs(reservationData.checkOutDate).format("HH:mm");
     const [name, setName] = useState(null);
     const [surname, setSurname] = useState(null);
     const [email, setEmail] = useState(null);
     const [contact, setContact] = useState(null);
     const [errors, setErrors] = useState({});
+    const timestamp = dayjs().format('YYY-MM-DDTHH:mm:ss');
     const navigate = useNavigate();
     const validateFields = () => {
         let tempErrors = {};
@@ -81,20 +84,75 @@ function PersonalDetailsPage() {
         setErrors(tempErrors);
         return Object.keys(tempErrors).length === 0; 
     };
-    const handleBooking = () => {
-        if(validateFields()){
+    console.log('reservation Data',reservationData);
+    useEffect(() => {
+      console.log('userBooking updated:', userBooking);
+    }, [userBooking]);    
+    const selectedDimensions = Object.entries(reservationData.counts)
+      .map(([dimension, count]) => ({ dimension, count }))
+      .filter((item) => item.count > 0);
+
+    console.log('Selected dimensions',selectedDimensions);
+    const handleBooking = async () => {
+      if (validateFields()) {
+        const bookingDetails = {
+          lockerCode: reservationData.selectedLocker?.lockerCode,
+          timestamp: timestamp,
+          checkInDate: reservationData.checkInDate,
+          checkOutDate: reservationData.checkOutDate,
+          customerFullName: `${name} ${surname}`,
+          customerEmail: email,
+          customerPhoneNumber: contact,
+        };
+        console.log('Request booking details', bookingDetails);
+        const bookingRequests = [];
+        // create separate request for each dimension
+        selectedDimensions.forEach(({ dimension, count }) => {
+          for (let i = 0; i < count; i++) {
+            const bookingRequest = axios.post(
+              'https://dev.ermes-srv.com/test_priyanka/be/v8/booking/by-date',
+              {
+                ...bookingDetails,
+                dimension,
+              },
+              {
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+              }
+            );
+            bookingRequests.push(bookingRequest);
+          }
+        });
+    
+        try {
+          const responses = await Promise.allSettled(bookingRequests);
+          const successfulBookings = responses
+            .filter((res) => res.status === 'fulfilled')
+            .map((res) => res.value.data.data);
+    
+          const failedBookings = responses.filter((res) => res.status === 'rejected');
+    
+          console.log('Successful bookings:', successfulBookings);
+          if (failedBookings.length > 0) {
+            console.log('Some bookings failed:', failedBookings);
+            Swal.fire('Error!', `Unfortunately, Some of the bookings failed`, 'error');
+          }
           const personalData = {
-            reservationCodes,
-            name,
-            surname,
-            email,
-            contact
+            userBooking: successfulBookings,
           };
+          console.log('PersonalData', personalData);
+          setUserBooking(successfulBookings);
+          console.log('userbooking',userBooking);
           setPersonalData(personalData);
-          localStorage.setItem("personalData", JSON.stringify(personalData));
-          navigate("confirmationdetails");
+          localStorage.setItem('personalData', JSON.stringify(personalData));
+          navigate('confirmationdetails');
+        } catch (error) {
+          console.error('Unexpected error:', error);
+          Swal.fire('Error!', `Booking failed. ${error.message}`, 'error');
         }
-    };
+      }
+    };    
     
     return(
         <>
@@ -106,17 +164,15 @@ function PersonalDetailsPage() {
                         <Table aria-label="customized table">
                             <TableHead>
                                 <TableRow>
-                                    <StyledTableCell>Reservation Code</StyledTableCell>
                                     <StyledTableCell align="left">Dimension</StyledTableCell>
+                                    <StyledTableCell align="left">Number of Boxes</StyledTableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {reservationCodes.map((entry, index) => (
+                                {selectedDimensions.map((dimension, index) => (
                                     <StyledTableRow key={index}>
-                                    <StyledTableCell component="th" scope="row">
-                                        {entry.code}
-                                    </StyledTableCell>
-                                    <StyledTableCell align="left">{entry.dimension}</StyledTableCell>
+                                    <StyledTableCell align="left">{dimension.dimension}</StyledTableCell>
+                                    <StyledTableCell align="left">{dimension.count}</StyledTableCell>
                                     </StyledTableRow>
                                 ))}
                             </TableBody>

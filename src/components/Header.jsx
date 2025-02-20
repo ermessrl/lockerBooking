@@ -6,7 +6,9 @@ const Header = () => {
             <nav className="navbar navbar-expand-lg fixed-top">
             <div className="container-fluid">
                 <div className="logo">
-                    <img src="logo.png" alt="BagLocker Logo"/>
+                    <Link to="/">
+                    <img src= {`/logo.png?v=${Date.now()}`} alt="BagLocker Logo" style={{ cursor: 'pointer' }}/>
+                    </Link>
                 </div>
                 
                 {/*!-- Language Dropdown for Mobile --*/}
@@ -33,7 +35,7 @@ const Header = () => {
                 <div className="collapse navbar-collapse" id="navbarNav">
                     <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                         <li className="nav-item">
-                            <Link className="nav-link active" to= "/landing" data-it="HOME" data-en="HOME" data-fr="ACCUEIL" data-de="HOME" data-es="INICIO" data-zh="主页" data-ja="ホーム" data-ru="ГЛАВНАЯ">HOME</Link>
+                            <Link className="nav-link active" to= "/" data-it="HOME" data-en="HOME" data-fr="ACCUEIL" data-de="HOME" data-es="INICIO" data-zh="主页" data-ja="ホーム" data-ru="ГЛАВНАЯ">HOME</Link>
                         </li>
                         <li className="nav-item">
                             <a className="nav-link" href="#chi-siamo" data-it="CHI SIAMO" data-en="ABOUT US" data-fr="QUI SOMMES-NOUS" data-de="ÜBER UNS" data-es="QUIÉNES SOMOS" data-zh="关于我们" data-ja="会社概要" data-ru="О НАС">CHI SIAMO</a>
@@ -51,7 +53,7 @@ const Header = () => {
                             <a className="nav-link" href="#contatti" data-it="CONTATTI" data-en="CONTACT" data-fr="CONTACT" data-de="KONTAKT" data-es="CONTACTO" data-zh="联系我们" data-ja="お問い合わせ" data-ru="КОНТАКТЫ">CONTATTI</a>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" to="/manageBooking"> MANAGE BOOKING</Link>
+                            <Link className="nav-link" to="/login"> MANAGE BOOKING</Link>
                         </li>
                     </ul>
 
