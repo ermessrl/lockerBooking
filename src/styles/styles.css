@@ -376,6 +376,12 @@ background-color: #150ea3;
     gap: 1rem;
     width: 100%;
 }
+.box-list-manage-booking {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 88%;
+  }
 .box-item {
     display: flex;
     align-items: center;

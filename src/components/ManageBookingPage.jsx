@@ -160,7 +160,7 @@ useEffect(() => {
   return(
       <>
       <div className="landing">
-        <div className="box-list">
+        <div className="box-list-manage-booking">
           <h4>Manage your booking</h4>
           <h5> Hello, {customerFullName} </h5>
           <p style={{"fontSize":"16px"}}> Please find below your booking details.<br/>
