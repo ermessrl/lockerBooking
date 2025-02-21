@@ -48,6 +48,7 @@ function BodySection() {
         }
       };
       fetchData(); 
+      console.log(lockers, selectedLocker);
     }  
   };
 

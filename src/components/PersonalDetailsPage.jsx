@@ -14,6 +14,7 @@ import { TextField } from "@mui/material";
 import dayjs from "dayjs";
 import Swal from "sweetalert2";
 import axios from "axios";
+import {formatCurrency} from "../utils/utils";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -181,7 +182,7 @@ function PersonalDetailsPage() {
                     <div>
                         <p>Your Drop date and time: <strong>{formattedDropDate} at {formattedDropTime}</strong> </p> 
                         <p>Your Pickup date and time: <strong>{formattedPickUpDate} at {formattedPickUpTime}</strong> </p> 
-                        <p>Total amount to be paid: <strong>€ {reservationData.grandTotal}</strong></p> 
+                        <p>Total amount to be paid: <strong> {formatCurrency(reservationData.grandTotal, "it-IT", "EUR")}</strong></p> 
                     </div>
                 </div>{/*details-display*/}
                 <div className="container">
