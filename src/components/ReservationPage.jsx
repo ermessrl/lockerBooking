@@ -1,6 +1,6 @@
-import React, {useState, useEffect, useContext, useMemo} from "react";
+import React, {useState, useEffect, useContext} from "react";
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import { Outlet, useNavigate, useLocation } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { ReservationContext } from "./ReservationContext";
 import { TextField } from "@mui/material";
 import { LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
@@ -12,12 +12,12 @@ import { USE_MOCK_DATA } from "../../src/config";
 import { mockDimensions, mockPromoCode } from "../../src/api/mockData";
 import Swal from "sweetalert2";
 import axios from "axios";
+import { LockerContext } from "./LockerContext";
 function ReservationPage() {
 
-const location = useLocation();
 const { setReservationData } = useContext(ReservationContext);
+const { selectedLocker, setSelectedLocker} = useContext(LockerContext);
 const navigate = useNavigate();
-const selectedLocker = useMemo(() => location?.state?.selectedLocker || {}, [location?.state?.selectedLocker]);
 const [selectedDropDate, setSelectedDropDate] = useState(dayjs());;
 const [selectedPickUpDate, setSelectedPickUpDate] = useState(dayjs());;
 const [selectedDropTime, setSelectedDropTime] = useState(dayjs().add(5, 'minutes'));
@@ -34,7 +34,24 @@ const [promoCodePercentage, setPromoCodePercentage] = useState(0);
 const checkInDate = selectedDropTime.format('YYYY-MM-DDTHH:mm:ss');
 const checkOutDate = selectedPickUpTime.format('YYYY-MM-DDTHH:mm:ss');
 const timestamp = dayjs().format('YYY-MM-DDTHH:mm:ss');
-
+useEffect(() => {
+  const lockerData = localStorage.getItem("lockerData");
+  console.log('locker data',lockerData);
+  if (lockerData) {
+    try {
+      const parsedLockerData = JSON.parse(lockerData);
+      if (parsedLockerData.locker && parsedLockerData.locker.length > 0) {
+        // Set the first locker in the array
+        setSelectedLocker(parsedLockerData.locker[0]);
+      } else {
+        console.log("No lockers found in the stored data.");
+      }
+    } catch (error) {
+      console.error("Error parsing locker data:", error);
+    }
+  }
+}, [setSelectedLocker]); 
+console.log('selected locker',selectedLocker);
 useEffect(() => {
   if (USE_MOCK_DATA) {
     setDimensions(mockDimensions);

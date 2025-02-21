@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { mockLockers } from "../../src/api/mockData";  // Import the mock data
 import { Outlet, useNavigate } from "react-router-dom";
-import { USE_MOCK_DATA } from "../../src/config";
-import axios from 'axios';
 
 const DEFAULT_PAGE = 1;  
 const DEFAULT_PAGE_SIZE = 3;
@@ -13,24 +10,11 @@ function LandingPage() {
   const [currentPage, setCurrentPage] = useState(DEFAULT_PAGE);
   const [selectedLocker,setSelectedLocker] = useState(null);
   useEffect(() => {
-    if (USE_MOCK_DATA) {
-      setLockers(mockLockers);
-    } else {
-      const fetchData = async () => {
-        try {
-          const response = await axios.get('https://dev.ermes-srv.com/test_priyanka/be/v8/locker/list');
-          const filteredLockers = response.data.data.filter(
-            (locker) => locker.onlineBooking === true
-          );
-          setLockers(filteredLockers);
-          console.log('Filtered Lockers:', filteredLockers);
-        } catch (err) {
-          console.log('error', err);
-        }
-      };
-      fetchData();  
-    }
-  }, []);  
+      const lockerData = localStorage.getItem("lockerData");
+      if (lockerData) {
+          setLockers(JSON.parse(lockerData));
+      }
+    }, [setLockers]);  
 
   const handleLockerClick = (locker) => {
     setSelectedLocker(locker);
