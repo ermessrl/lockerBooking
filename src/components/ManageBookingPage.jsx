@@ -12,6 +12,8 @@ import { Outlet } from "react-router-dom";
 import { LoginDetailsContext } from "./LoginDetailsContext";
 import Swal from "sweetalert2";
 import axios from "axios";
+import {formatCurrency} from "../utils/utils";
+
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
       backgroundColor: theme.palette.common.black,
@@ -187,7 +189,7 @@ useEffect(() => {
                 <StyledTableCell align="left">{booking.dimension}</StyledTableCell>
                 <StyledTableCell align="left">{dayjs(booking.checkInDate).format("DD/MM/YY")} at {dayjs(booking.checkInDate).format("hh:mm")}</StyledTableCell>
                 <StyledTableCell align="left">{dayjs(booking.checkOutDate).format("DD/MM/YY")} at {dayjs(booking.checkOutDate).format("hh:mm")}</StyledTableCell>
-                <StyledTableCell align="left">€ {(booking.finalPrice/100).toFixed(2)}</StyledTableCell>
+                <StyledTableCell align="left"> {formatCurrency((booking.finalPrice/100).toFixed(2), "it-IT", "EUR")}</StyledTableCell>
                 <StyledTableCell align="left"><i className="fa-solid fa-trash-can icon" onClick={() =>{handleDelete(booking)}}></i></StyledTableCell>
                 </StyledTableRow>
                 ))}

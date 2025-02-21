@@ -1,6 +1,6 @@
-import React, {useState, useEffect, useContext, useMemo} from "react";
+import React, {useState, useEffect, useContext} from "react";
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import { Outlet, useNavigate, useLocation } from "react-router-dom";
+import { Outlet, useNavigate,useLocation } from "react-router-dom";
 import { ReservationContext } from "./ReservationContext";
 import { TextField } from "@mui/material";
 import { LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
@@ -12,12 +12,16 @@ import { USE_MOCK_DATA } from "../../src/config";
 import { mockDimensions, mockPromoCode } from "../../src/api/mockData";
 import Swal from "sweetalert2";
 import axios from "axios";
+import { LockerContext } from "./LockerContext";
+import {formatCurrency} from "../utils/utils";
+
+
 function ReservationPage() {
 
-const location = useLocation();
 const { setReservationData } = useContext(ReservationContext);
+const { selectedLocker, setSelectedLocker} = useContext(LockerContext);
+const location = useLocation();
 const navigate = useNavigate();
-const selectedLocker = useMemo(() => location?.state?.selectedLocker || {}, [location?.state?.selectedLocker]);
 const [selectedDropDate, setSelectedDropDate] = useState(dayjs());;
 const [selectedPickUpDate, setSelectedPickUpDate] = useState(dayjs());;
 const [selectedDropTime, setSelectedDropTime] = useState(dayjs().add(5, 'minutes'));
@@ -34,42 +38,71 @@ const [promoCodePercentage, setPromoCodePercentage] = useState(0);
 const checkInDate = selectedDropTime.format('YYYY-MM-DDTHH:mm:ss');
 const checkOutDate = selectedPickUpTime.format('YYYY-MM-DDTHH:mm:ss');
 const timestamp = dayjs().format('YYY-MM-DDTHH:mm:ss');
+useEffect(() => {
+  if (location.state && location.state.selectedLocker) {
+    setSelectedLocker(location.state.selectedLocker);
+    // (Opzionale) Aggiorna localStorage con il locker selezionato
+    localStorage.setItem("lockerData", JSON.stringify(location.state.selectedLocker));
+  } else {
+    const lockerData = localStorage.getItem("lockerData");
+    console.log('locker data', lockerData);
+    if (lockerData) {
+      try {
+        const parsedLockerData = JSON.parse(lockerData);
+        // Se parsedLockerData è un array, prendi il primo (fallback)
+        if (Array.isArray(parsedLockerData)) {
+          if (parsedLockerData.length > 0) {
+            setSelectedLocker(parsedLockerData[0]);
+          }
+        } else if (parsedLockerData.locker && Array.isArray(parsedLockerData.locker) && parsedLockerData.locker.length > 0) {
+          setSelectedLocker(parsedLockerData.locker[0]);
+        } else {
+          // Se parsedLockerData è un oggetto singolo
+          setSelectedLocker(parsedLockerData);
+        }
+      } catch (error) {
+        console.error("Error parsing locker data:", error);
+      }
+    }
+  }
+}, [location, setSelectedLocker]);
+
+console.log('selected locker',selectedLocker);
 
 useEffect(() => {
   if (USE_MOCK_DATA) {
     setDimensions(mockDimensions);
   } else {
-    const fetchData = async () => {
-      try {
-        console.log({
-          lockerCode: selectedLocker.lockerCode,
-          timestamp: timestamp,
-          checkInDate: checkInDate,
-          checkOutDate: checkOutDate,
-        });
-        const response = await axios.post(
-          'https://dev.ermes-srv.com/test_priyanka/be/v8/box/available-by-date',
-          {
+    if (!USE_MOCK_DATA && selectedLocker && selectedLocker.lockerCode && timestamp){
+      const fetchData = async () => {
+        try {
+          console.log({
             lockerCode: selectedLocker.lockerCode,
             timestamp: timestamp,
             checkInDate: checkInDate,
             checkOutDate: checkOutDate,
-          },
-          {
-            headers: {
-              'Content-Type': 'application/json',
+          });
+          const response = await axios.post(
+            'https://dev.ermes-srv.com/test_priyanka/be/v8/box/available-by-date',
+            {
+              lockerCode: selectedLocker.lockerCode,
+              timestamp: timestamp,
+              checkInDate: checkInDate,
+              checkOutDate: checkOutDate,
             },
-          }
-        );
+            {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            }
+          );
 
-        setDimensions(response.data.data);
-        console.log('available boxes',response.data.data);
-      } catch (err) {
-        console.error('error', err);
-      }
-    };
-
-    if (selectedLocker.lockerCode && timestamp) {
+          setDimensions(response.data.data);
+          console.log('available boxes',response.data.data);
+        } catch (err) {
+          console.error('error', err);
+        }
+      };
       fetchData();
     }
   }
@@ -332,6 +365,9 @@ const handleButtonClick = () => {
 };
 return (
     <>
+    {!selectedLocker ? (
+        <div>Loading...</div>
+      ) : (
       <div className="landing ">
         <div className="boxes-container">
           <div className = "box">
@@ -369,7 +405,7 @@ return (
                       setShowDialog(true);
                     }
                   }}
-                  className="dialog-button"
+                  className="cta-button"
                 >
                   Select Boxes
                 </button>
@@ -388,7 +424,7 @@ return (
                                 <div className="count">{counts[dim.dimension]}</div>
                                 <button className="cnt-button" onClick={() => handleClickIncrement(dim.dimension)}>+</button>
                               </div>
-                              <div className="price"> €{dim.price/100} per hour</div>
+                              <div className="price"> {formatCurrency(dim.price/100, "it-IT", "EUR")} / box</div>
                             </div>
                           ))}
                         </div>
@@ -403,20 +439,20 @@ return (
 
                 <div className="box_datetime">
                   <TextField label = 'Have a coupon or promo code? ' variant="outlined" onChange={(e)=>setPromo(e.target.value)}/>
-                  <button className="cnt-button" onClick={() => handlePromoCode(promo)}>Apply</button>
+                  <button className="cta-button" onClick={() => handlePromoCode(promo)}>Apply</button>
                 </div>
                 <div className="total-summary" >
                   <div className="box_datetime">
-                    <p className="summary-label">Total: </p><p>€{total}</p>
+                    <p className="summary-label">Total: </p><p>{formatCurrency(total, "it-IT", "EUR")}</p>
                   </div>
                   <div className="box_datetime">
                   <p className="summary-label">Discount: </p><p>{promoCodePercentage} % </p>
                   </div>
                   <div className="box_datetime">
-                  <p className="summary-label">You Saved: </p><p>- €{(promoCodeDiscount).toFixed(2)}</p>
+                  <p className="summary-label">You Saved: </p><p>- {formatCurrency(promoCodeDiscount.toFixed(2), "it-IT", "EUR")}</p>
                   </div>
                   <div className="box_datetime">
-                  <p className="summary-label">Grand Total: </p><p>€{grandTotal}</p>
+                  <p className="summary-label">Grand Total: </p><p>{formatCurrency(grandTotal, "it-IT", "EUR")}</p>
                   </div>
                   <button
                     className="cta-button"
@@ -438,6 +474,7 @@ return (
         </div>                   
         <Outlet/>
       </div>
+      )}
     </>
   );
 }

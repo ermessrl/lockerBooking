@@ -17,6 +17,7 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from 'leaflet';
 import Swal from "sweetalert2";
+import {formatCurrency} from "../utils/utils";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -88,7 +89,7 @@ export function ConfirmDetailsPage(){
         doc.text(`Drop off: ${formattedDropDate} at ${formattedDropTime}`, 10, 75);
         doc.text(`Pick up: ${formattedPickUpDate} at ${formattedPickUpTime}`, 10, 85);
         doc.text(`${reservationData.selectedLocker.lockerName} at ${reservationData.selectedLocker.address}`, 10, 95);
-        doc.text(`Total Amount: €${reservationData.grandTotal}`, 10, 105)
+        doc.text(`Total Amount: ${formatCurrency(reservationData.grandTotal, "it-IT", "EUR")}`, 10, 105)
         autoTable(doc, {
             startY: 125,
             head: [["Unlock Identifier","Unlock Code", "Dimension"]],
@@ -192,7 +193,7 @@ export function ConfirmDetailsPage(){
                                 <p className="confirm-label">Pick Up: </p><p><strong>{formattedPickUpDate} at {formattedPickUpTime}</strong></p>
                             </div>
                             <div className="box_datetime">
-                                <p className="confirm-label">Total: </p><p><strong>€ {reservationData.grandTotal}</strong></p>
+                                <p className="confirm-label">Total: </p><p><strong> {formatCurrency(reservationData.grandTotal, "it-IT", "EUR")}</strong></p>
                             </div>
                             <div className="box_datetime">
                                 <p className="confirm-label">Email: </p><p><strong>{userBooking[0]?.customerEmail}</strong></p>

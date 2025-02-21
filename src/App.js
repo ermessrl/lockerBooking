@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import { BrowserRouter as Router, Route, Routes, useNavigate, Outlet } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -9,14 +9,47 @@ import ConfirmationDetailsPage from "./components/ConfirmationDetailsPage";
 import { ReservationProvider } from "./components/ReservationContext";
 import { PersonalDetailsProvider} from "./components/PersonalDetailsContext";
 import { LoginDetailsProvider } from "./components/LoginDetailsContext";
+import { LockerProvider } from "./components/LockerContext";
 import ManageBookingPage from "./components/ManageBookingPage";
 import LoginPage from "./components/LoginPage";
+import { mockLockers } from "./api/mockData";
+import { USE_MOCK_DATA } from "./config";
+import axios from "axios";
 // Body Component
 function BodySection() {
   const navigate = useNavigate();
-
+  const [lockers,setLockers] = useState(null);
+  const [selectedLocker, setSelectedLocker] = useState(null);
   const handleButtonClick = () => {
-    navigate("/landing");
+    if (USE_MOCK_DATA) {
+      setLockers(mockLockers);
+    } else {
+      const fetchData = async () => {
+        try {
+          const response = await axios.get('https://dev.ermes-srv.com/test_priyanka/be/v8/locker/list');
+          const filteredLockers = response.data.data.filter(
+            (locker) => locker.onlineBooking === true
+          );         
+          if (filteredLockers.length === 1) {
+            console.log('Filtered Lockers:', filteredLockers[0]);
+            setSelectedLocker(filteredLockers[0]);
+            localStorage.setItem('lockerData', JSON.stringify(filteredLockers[0]));
+            const lockerData = localStorage.getItem("lockerData");
+            console.log('lockerData in appjs', lockerData);
+            navigate("landing/reserve");
+          } else {
+            console.log('Filtered Lockers:', filteredLockers);
+            setLockers(filteredLockers);
+            localStorage.setItem('lockerData', JSON.stringify(filteredLockers));
+            navigate("/landing");
+          }
+        } catch (err) {
+          console.log('error', err);
+        }
+      };
+      fetchData(); 
+      console.log(lockers, selectedLocker);
+    }  
   };
 
   return (
@@ -68,6 +101,7 @@ function BodySection() {
 // App Component
 function App() {
   return (
+    <LockerProvider>
     <ReservationProvider>
     <PersonalDetailsProvider>
     <LoginDetailsProvider>
@@ -107,6 +141,7 @@ function App() {
   </LoginDetailsProvider>
   </PersonalDetailsProvider>
   </ReservationProvider>
+  </LockerProvider>
   );
 }
 const LandingLayout = () => <Outlet />;
