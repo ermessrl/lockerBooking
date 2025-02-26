@@ -164,15 +164,15 @@ useEffect(() => {
           <h4>Manage your booking</h4>
           <h5> Hello, {customerFullName} </h5>
           <p style={{"fontSize":"16px"}}> Please find below your booking details.<br/>
-            <strong>email: </strong>{customerEmail}&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-            <strong>contact: </strong> {customerPhoneNumber}</p>
+            <strong>Email: </strong>{customerEmail}&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+            <strong>Phone number: </strong> {customerPhoneNumber}</p>
         </div>
         <div style={{width:"90%", padding: '16px', marginBottom: "15rem" }}>
           <TableContainer component={Paper}>
             <Table aria-label="customized table">
               <TableHead>
                   <TableRow>
-                    <StyledTableCell>Unlock Identifier</StyledTableCell>
+                    <StyledTableCell>Phone number</StyledTableCell>
                     <StyledTableCell align="left">Unlock Code</StyledTableCell>
                     <StyledTableCell align="left">Dimension</StyledTableCell>
                     <StyledTableCell align="left">Drop-off time</StyledTableCell>

@@ -50,18 +50,20 @@ export function ConfirmDetailsPage(){
     const {reservationData, setReservationData } = useContext(ReservationContext);
     const personalData = useContext(PersonalDetailsContext);
     const [userBooking, setUserBooking] = useState([]);
+    const [selectedMethod, setSelectedMethod] = useState('');
     Swal.fire('Success!','Your booking is complete.','success');
     useEffect(() => {
       const storedData = localStorage.getItem("reservationData");
       const reservationData = storedData ? JSON.parse(storedData) : null;
-    
       setReservationData(reservationData);
-  
+      const storedPersonalData = localStorage.getItem("personalData");
+      const personalData = storedPersonalData ? JSON.parse(storedPersonalData) : null;
+      setSelectedMethod(personalData.selectedMethod);
       if (personalData?.userBooking) {
         setUserBooking(personalData.userBooking);
       } else {
-        const storedPersonalData = JSON.parse(localStorage.getItem('personalData'));
-        setUserBooking(storedPersonalData?.userBooking || []);
+        const storedBooking = JSON.parse(localStorage.getItem('personalData'));
+        setUserBooking(storedBooking?.userBooking || []);
       }
     }, [personalData, setReservationData]);
   
@@ -90,9 +92,10 @@ export function ConfirmDetailsPage(){
         doc.text(`Pick up: ${formattedPickUpDate} at ${formattedPickUpTime}`, 10, 85);
         doc.text(`${reservationData.selectedLocker.lockerName} at ${reservationData.selectedLocker.address}`, 10, 95);
         doc.text(`Total Amount: ${formatCurrency(reservationData.grandTotal, "it-IT", "EUR")}`, 10, 105)
+        doc.text(`Selected payment method: ${selectedMethod}`, 10, 115)
         autoTable(doc, {
             startY: 125,
-            head: [["Unlock Identifier","Unlock Code", "Dimension"]],
+            head: [["Phone number","Unlock Code", "Dimension"]],
             body: userBooking?.map((userBooking) => [
                 userBooking.unlockIdentifier,
                 userBooking.unlockPin,
@@ -148,12 +151,14 @@ export function ConfirmDetailsPage(){
     //         Swal.fire('Error!',`Payment failed. ${error.message}`, 'error');
     //       }
     // };
+    console.log('inconfirm', userBooking, selectedMethod);
+
     return(
         <>
         <div className="landing">
             <div className="confirm-layout">{/*confirm layout */}
                 <div className="confirm-top">{/*display details */}
-                    <div>
+                    <div style={{textAlign: "left"}}>
                     <h5>Your booking is complete {userBooking[0]?.customerFullName}</h5>
                     <h5 style={{ color: "red" }}>Thank you for booking with us.</h5>
                     <h5 style={{ color: "purple" }}>You will soon receive an email confirmation.</h5>
@@ -169,7 +174,7 @@ export function ConfirmDetailsPage(){
                             <Table aria-label="customized table">
                                 <TableHead>
                                     <TableRow>
-                                        <StyledTableCell>Unlock Identifier</StyledTableCell>
+                                        <StyledTableCell>Phone Number</StyledTableCell>
                                         <StyledTableCell>Unlock Code</StyledTableCell>
                                         <StyledTableCell align="left">Dimension</StyledTableCell>
                                     </TableRow>
@@ -200,6 +205,9 @@ export function ConfirmDetailsPage(){
                             </div>
                             <div className="box_datetime">
                                 <p className="confirm-label">Phone: </p><p><strong>{userBooking[0]?.customerPhoneNumber}</strong></p>
+                            </div>
+                            <div className="box_datetime">
+                                <p className="confirm-label">Payment: </p><p><strong>{selectedMethod}</strong></p>
                             </div>
                         </div>
                     </div>

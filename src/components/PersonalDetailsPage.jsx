@@ -10,11 +10,14 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { TextField } from "@mui/material";
+import { Button, TextField, FormControl } from "@mui/material";
 import dayjs from "dayjs";
 import Swal from "sweetalert2";
 import axios from "axios";
 import {formatCurrency} from "../utils/utils";
+import { PhoneInput } from 'react-international-phone';
+import "react-international-phone/style.css";
+import { Box, Container, Typography, RadioGroup, FormControlLabel, Radio, Tooltip} from "@mui/material";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -35,7 +38,26 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
       border: 0,
     },
   }));
+  const PaymentOption = styled(Paper)(({theme}) => ({
+    cursor: "pointer",
+    transition: "all 0.3s ease",
+    "&:hover": {
+      transform: "translateY(-2px)",
+      boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)"
+    }
+  }));
   
+  const PaymentContainer = styled(Container)({
+    marginTop: "1rem",
+    marginBottom: "1rem"
+  });
+  
+  const MethodIcon = styled(Box)({
+    fontSize: "1rem",
+    marginRight: "0.5rem",
+    display: "flex",
+    alignItems: "center"
+  });
 function PersonalDetailsPage() {
     const {reservationData, setReservationData } = useContext(ReservationContext);
     const {setPersonalData} = useContext(PersonalDetailsContext);
@@ -72,16 +94,34 @@ function PersonalDetailsPage() {
     const [name, setName] = useState(null);
     const [surname, setSurname] = useState(null);
     const [email, setEmail] = useState(null);
-    const [contact, setContact] = useState(null);
+    const [phone, setPhone] = useState("");
     const [errors, setErrors] = useState({});
-    const timestamp = dayjs().format('YYY-MM-DDTHH:mm:ss');
+    const timestamp = dayjs().format('YYYY-MM-DDTHH:mm:ss');
     const navigate = useNavigate();
+    const [selectedMethod, setSelectedMethod] = useState("");
+    const paymentMethods = [
+      {
+        value: "paypal",
+        label: "PayPal",
+        icon: <i className="fa-brands fa-cc-paypal" />,
+      },
+      {
+        value: "stripe",
+        label: "Credit Card",
+        icon: <i className="fa-brands fa-cc-stripe" />,
+      },
+      {
+        value: "deposit",
+        label: "Pay at Deposit",
+        icon: <i className="fa-solid fa-money-bill" />,
+      }
+    ];
     const validateFields = () => {
         let tempErrors = {};
-        if (!name) tempErrors.name = "Please enter your name";
-        if (!surname) tempErrors.surname = "Please enter your surname";
-        if (!email) tempErrors.email = "Please enter your email";
-        if (!contact) tempErrors.contact = "Please enter your contact";
+        if (!name || name.length < 2 || /\d/.test(name)) tempErrors.name = "Please enter your name";
+        if (!surname || surname.length < 2 || /\d/.test(surname)) tempErrors.surname = "Please enter your surname";
+        if (!email || !/\S+@\S+\.\S+/.test(email)) tempErrors.email = "Please enter a valid email address";
+        if (!phone || !/^\+?\d{5,}$/.test(phone.trim())) tempErrors.phone = "Please enter a valid phone number";
         setErrors(tempErrors);
         return Object.keys(tempErrors).length === 0; 
     };
@@ -95,7 +135,7 @@ function PersonalDetailsPage() {
 
     console.log('Selected dimensions',selectedDimensions);
     const handleBooking = async () => {
-      if (validateFields()) {
+      if (validateFields() && selectedMethod) {
         const bookingDetails = {
           lockerCode: reservationData.selectedLocker?.lockerCode,
           timestamp: timestamp,
@@ -103,7 +143,7 @@ function PersonalDetailsPage() {
           checkOutDate: reservationData.checkOutDate,
           customerFullName: `${name} ${surname}`,
           customerEmail: email,
-          customerPhoneNumber: contact,
+          customerPhoneNumber: phone,
         };
         console.log('Request booking details', bookingDetails);
         const bookingRequests = [];
@@ -133,7 +173,7 @@ function PersonalDetailsPage() {
             .map((res) => res.value.data.data);
     
           const failedBookings = responses.filter((res) => res.status === 'rejected');
-    
+          
           console.log('Successful bookings:', successfulBookings);
           if (failedBookings.length > 0) {
             console.log('Some bookings failed:', failedBookings);
@@ -141,6 +181,7 @@ function PersonalDetailsPage() {
           }
           const personalData = {
             userBooking: successfulBookings,
+            selectedMethod: selectedMethod,
           };
           console.log('PersonalData', personalData);
           setUserBooking(successfulBookings);
@@ -154,7 +195,6 @@ function PersonalDetailsPage() {
         }
       }
     };    
-    
     return(
         <>
         <div className="landing">
@@ -179,7 +219,7 @@ function PersonalDetailsPage() {
                             </TableBody>
                         </Table>
                     </TableContainer>
-                    <div>
+                    <div style={{textAlign: "left" }}>
                         <p>Your Drop date and time: <strong>{formattedDropDate} at {formattedDropTime}</strong> </p> 
                         <p>Your Pickup date and time: <strong>{formattedPickUpDate} at {formattedPickUpTime}</strong> </p> 
                         <p>Total amount to be paid: <strong> {formatCurrency(reservationData.grandTotal, "it-IT", "EUR")}</strong></p> 
@@ -187,15 +227,93 @@ function PersonalDetailsPage() {
                 </div>{/*details-display*/}
                 <div className="container">
                     <h3>Enter your details to complete the booking</h3>
-                    <TextField label="Name" onChange={(e)=>setName(e.target.value)}/>
+                    <TextField component={Paper} label="Name" onChange={(e)=>setName(e.target.value)}/>
                     {errors.name && <p style={{ color: "red" }}>{errors.name}</p>}
-                    <TextField label="Surname" onChange={(e)=>setSurname(e.target.value)}/>
+                    <TextField component={Paper} label="Surname" onChange={(e)=>setSurname(e.target.value)}/>
                     {errors.surname && <p style={{ color: "red" }}>{errors.surname}</p>}
-                    <TextField label="Email" onChange={(e)=>setEmail(e.target.value)}/>
+                    <TextField component={Paper} label="Email" onChange={(e)=>setEmail(e.target.value)}/>
                     {errors.email && <p style={{ color: "red" }}>{errors.email}</p>}
-                    <TextField label="Contact" onChange={(e)=>setContact(e.target.value)}/>
-                    {errors.contact && <p style={{ color: "red" }}>{errors.contact}</p>}
-                    <button className = "cta-button" onClick={()=>{handleBooking()}}>Book</button>
+                    <FormControl fullWidth>
+                    <PhoneInput label="Phone Number"
+                      defaultCountry="it"
+                      value={phone}
+                      onChange={(phone) => setPhone(phone)}
+                      inputStyle={{
+                        width: "100%",
+                        height: "3.5rem",
+                        borderRadius: "4px",
+                        border: "1px solid rgba(0, 0, 0, 0.23)",
+                        paddingLeft: "1.5rem",
+                        fontSize: "1rem",
+                      }}
+                      buttonStyle={{
+                        height: "3.5rem",
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                      dropdownStyle={{
+                        maxHeight: "2.5rem",
+                        overflowY: "auto",
+                      }}
+                      containerStyle={{ width: "100%" }}/>
+                    {errors.phone && <p style={{ color: "red" }}>{errors.phone}</p>}
+                    </FormControl>
+                    <PaymentContainer>
+                      <Typography variant="h6" gutterBottom align="center">
+                        Select your preferred payment method
+                      </Typography>
+                      <Box sx={{ height: "10vh", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                        <RadioGroup
+                          row
+                          aria-label="payment-method"
+                          name="payment-method"
+                          onChange={(e)=>setSelectedMethod(e.target.value)}
+                          sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            gap: "1rem", 
+                            flexWrap: "nowrap"
+                          }}
+                        >
+                          {paymentMethods.map((method) => (
+                            <Tooltip
+                              key={method.value}
+                              placement="right"
+                              enterDelay={200}
+                            >
+                              <PaymentOption
+                                elevation={selectedMethod === method.value ? 3 : 1}
+                                sx={{
+                                  border: selectedMethod === method.value ? "2px solid #1976d2" : "none",
+                                  minWidth: { xs: "100%", sm: "14rem" }, // Consistent width for all options
+                                  flex: "1 1 auto", 
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center"
+                                }}
+                              >
+                               <FormControlLabel
+                                  value={method.value}
+                                  control={<Radio />}
+                                  label={
+                                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                                      <MethodIcon>{method.icon}</MethodIcon>
+                                      <Box>
+                                        <Typography variant="body2">{method.label}</Typography>
+                                        <Typography variant="body2" color="textSecondary">
+                                        </Typography>
+                                      </Box>
+                                    </Box>
+                                  }
+                                  sx={{ margin: 0 }}
+                                />
+                              </PaymentOption>
+                            </Tooltip>
+                          ))}
+                        </RadioGroup>
+                      </Box>
+                    </PaymentContainer>
+                    <Button variant="contained" size="large" onClick={()=>{handleBooking()}}>Book</Button>
                 </div>    
             </div> {/*boxes container div */}        
         </div>{/*landing div */}
@@ -203,5 +321,4 @@ function PersonalDetailsPage() {
         </>
     )
 }
-
 export default PersonalDetailsPage;

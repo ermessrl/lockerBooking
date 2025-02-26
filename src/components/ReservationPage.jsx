@@ -8,6 +8,8 @@ import { AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker} from "@mui/x-date-pickers/DatePicker";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import dayjs from 'dayjs';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import { USE_MOCK_DATA } from "../../src/config";
 import { mockDimensions, mockPromoCode } from "../../src/api/mockData";
 import Swal from "sweetalert2";
@@ -35,9 +37,19 @@ const [grandTotal, setGrandTotal] = useState(0);
 const [showDialog, setShowDialog] = useState(false);
 const [promo, setPromo] = useState("");
 const [promoCodePercentage, setPromoCodePercentage] = useState(0);
-const checkInDate = selectedDropTime.format('YYYY-MM-DDTHH:mm:ss');
-const checkOutDate = selectedPickUpTime.format('YYYY-MM-DDTHH:mm:ss');
-const timestamp = dayjs().format('YYY-MM-DDTHH:mm:ss');
+ // Function to combine date and time
+ const formatDateTime = (date, time) => {
+  if (!date || !time) return ""; 
+  return dayjs(date)
+    .set("hour", dayjs(time).hour())
+    .set("minute", dayjs(time).minute())
+    .set("second", 0) // Ensures seconds are always zero
+    .format("YYYY-MM-DDTHH:mm:ss");
+};
+
+const checkInDate = formatDateTime(selectedDropDate, selectedDropTime);
+const checkOutDate = formatDateTime(selectedPickUpDate, selectedPickUpTime);
+const timestamp = dayjs().format('YYYY-MM-DDTHH:mm:ss');
 useEffect(() => {
   if (location.state && location.state.selectedLocker) {
     setSelectedLocker(location.state.selectedLocker);
@@ -354,13 +366,15 @@ const handleButtonClick = () => {
 //     return Object.keys(tempErrors).length === 0; 
 // };
   setReservationData(reservationDetails);
+  console.log('reservation details', reservationDetails);
+  console.log('selected time', checkInDate, checkOutDate);
   localStorage.setItem("reservationData", JSON.stringify(reservationDetails));
   if(reservationDetails.grandTotal !==0){
     navigate("personaldetails");
   }
   else
   {
-    Swal.fire('Error!','Price cannot be empty.','error');
+    Swal.fire('Error!','No boxes selected','error');
   }
 };
 return (
@@ -395,81 +409,81 @@ return (
                   <TimePicker label = "Select Pickup Time" ampm={false} value={selectedPickUpTime} disablePast minTime={selectedDropTime ? dayjs(selectedDropTime).add(1, 'hour') : null} onChange={(newTime) =>  setSelectedPickUpTime(newTime)}/>
                 </LocalizationProvider>
               </div>
-              <div className="container">
-                <div style={{display:"flex", flexDirection:"row", gap:"2rem"}}>
-                <p style={{paddingTop:"2rem"}}>Total Boxes Selected: {totalBagsSelected}</p>
-                <button  onClick={() => {    
-                    if (dimensions.length === 0) {
-                      Swal.fire('Error!','No boxes available for the selected timeslot. Please select a different timeslot.','error');
-                    } else {
-                      setShowDialog(true);
-                    }
-                  }}
-                  className="cta-button"
-                >
-                  Select Boxes
-                </button>
-                </div>
-                <div>
-                  {showDialog && (
-                    <div className="dialog-overlay">
-                      <div className="dialog-box">
-                        <h2 className="dialog-title">Select Your Boxes</h2>
-                        <div className="box-list">  
-                          {dimensions.map((dim) => (
-                            <div key={`${dim.lockerCode}-${dim.dimension}`} className="box-item">
-                              <div className="dimension-label">{dim.dimension}</div> 
-                              <div className="counter-group">
-                                <button className="cnt-button" onClick={() => handleClickDecrement(dim.dimension)}>-</button>
-                                <div className="count">{counts[dim.dimension]}</div>
-                                <button className="cnt-button" onClick={() => handleClickIncrement(dim.dimension)}>+</button>
+              <Box sx={{ '& button': { m: 1 } }}>
+                <div className="container">
+                  <div style={{display:"flex", flexDirection:"row", gap:"2rem"}}>
+                  <p style={{paddingTop:"2rem"}}>Total Boxes Selected: {totalBagsSelected}</p>
+                  <Button variant="contained" size="large" onClick={() => {    
+                      if (dimensions.length === 0) {
+                        Swal.fire('Error!','No boxes available for the selected timeslot. Please select a different timeslot.','error');
+                      } else {
+                        setShowDialog(true);
+                      }
+                    }}
+                  >
+                    Select Boxes
+                  </Button>
+                  </div>
+                  <div>
+                    {showDialog && (
+                      <div className="dialog-overlay">
+                        <div className="dialog-box">
+                          <h2 className="dialog-title">Select Your Boxes</h2>
+                          <div className="box-list">  
+                            {dimensions.map((dim) => (
+                              <div key={`${dim.lockerCode}-${dim.dimension}`} className="box-item">
+                                <div className="dimension-label">{dim.dimension}</div> 
+                                <div className="counter-group">
+                                  <button className="cnt-button" onClick={() => handleClickDecrement(dim.dimension)}>-</button>
+                                  <div className="count">{counts[dim.dimension]}</div>
+                                  <button className="cnt-button" onClick={() => handleClickIncrement(dim.dimension)}>+</button>
+                                </div>
+                                <div className="price"> {formatCurrency(dim.price/100, "it-IT", "EUR")} / box</div>
                               </div>
-                              <div className="price"> {formatCurrency(dim.price/100, "it-IT", "EUR")} / box</div>
-                            </div>
-                          ))}
+                            ))}
+                          </div>
+                          {/* Close button */}
+                          <button onClick={() => setShowDialog(false)} className="dialog-button">
+                            Close
+                          </button>
                         </div>
-                        {/* Close button */}
-                        <button onClick={() => setShowDialog(false)} className="dialog-button">
-                          Close
-                        </button>
                       </div>
-                    </div>
-                  )}
-                </div>
+                    )}
+                  </div>
 
-                <div className="box_datetime">
-                  <TextField label = 'Have a coupon or promo code? ' variant="outlined" onChange={(e)=>setPromo(e.target.value)}/>
-                  <button className="cta-button" onClick={() => handlePromoCode(promo)}>Apply</button>
+                  <div style={{ display: "flex", gap: "10px", width: "100%" }}>
+                    <TextField label = 'Have a coupon or promo code? ' variant="outlined" style= {{paddingTop: "0.70rem"}}onChange={(e)=>setPromo(e.target.value)} fullWidth/>
+                    <Button variant="contained" size="large" style={{ whiteSpace: "nowrap", height: "56px"}}  onClick={() => handlePromoCode(promo)}>Apply</Button>
+                  </div>
+                  <div className="total-summary" >
+                    <div className="box_datetime">
+                      <p className="summary-label">Total: </p><p>{formatCurrency(total, "it-IT", "EUR")}</p>
+                    </div>
+                    <div className="box_datetime">
+                    <p className="summary-label">Discount: </p><p>{promoCodePercentage} % </p>
+                    </div>
+                    <div className="box_datetime">
+                    <p className="summary-label">You Saved: </p><p>- {formatCurrency(promoCodeDiscount.toFixed(2), "it-IT", "EUR")}</p>
+                    </div>
+                    <div className="box_datetime">
+                    <p className="summary-label">Grand Total: </p><p>{formatCurrency(grandTotal, "it-IT", "EUR")}</p>
+                    </div>
+                    <Button variant="contained" size="large"
+                      onClick={handleButtonClick}
+                      data-it=""
+                      data-en="CONFIRM"
+                      data-fr=""
+                      data-de=""
+                      data-es=""
+                      data-zh=""
+                      data-ja=""
+                      data-ru=""
+                      >
+                      CONFIRM
+                      </Button>
+                  </div>
                 </div>
-                <div className="total-summary" >
-                  <div className="box_datetime">
-                    <p className="summary-label">Total: </p><p>{formatCurrency(total, "it-IT", "EUR")}</p>
-                  </div>
-                  <div className="box_datetime">
-                  <p className="summary-label">Discount: </p><p>{promoCodePercentage} % </p>
-                  </div>
-                  <div className="box_datetime">
-                  <p className="summary-label">You Saved: </p><p>- {formatCurrency(promoCodeDiscount.toFixed(2), "it-IT", "EUR")}</p>
-                  </div>
-                  <div className="box_datetime">
-                  <p className="summary-label">Grand Total: </p><p>{formatCurrency(grandTotal, "it-IT", "EUR")}</p>
-                  </div>
-                  <button
-                    className="cta-button"
-                    onClick={handleButtonClick}
-                    data-it=""
-                    data-en="CONFIRM"
-                    data-fr=""
-                    data-de=""
-                    data-es=""
-                    data-zh=""
-                    data-ja=""
-                    data-ru=""
-                    >
-                    CONFIRM
-                    </button>
-                </div>
-              </div>
+              </Box>
             </div>
         </div>                   
         <Outlet/>

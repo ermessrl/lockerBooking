@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
-import { AppProvider } from "@toolpad/core/AppProvider";
-import { useTheme } from "@mui/material/styles";
+//import { AppProvider } from "@toolpad/core/AppProvider";
+//import { useTheme } from "@mui/material/styles";
 import { TextField, Button, Box, Typography, Paper, Container, CssBaseline } from "@mui/material";
 import { Outlet, useNavigate } from "react-router-dom";
 import { mockLockers, mockUserBookings } from "../../src/api/mockData";
@@ -12,19 +12,9 @@ import FormControl from '@mui/material/FormControl';
 import dayjs from "dayjs";
 import Select from '@mui/material/Select';
 import axios from "axios";
-const BRANDING = {
-    logo: (
-        <img
-        src="logo.png"
-        alt="BagLockers Logo"
-        style={{ height: 24 }}
-        />
-    ),
-    title: "BagLockers",
-};
 
 function LoginPage() {
-    const theme = useTheme();
+    //const theme = useTheme();
     const [unlockIdentifier, setUnlockIdentifier] = useState("");
     const [unlockPin, setUnlockPin] = useState("");
     const [error, setError] = useState("");
@@ -34,7 +24,7 @@ function LoginPage() {
     const navigate = useNavigate();
     const [selectedLocker,setSelectedLocker] = useState(null);
     const [lockers, setLockers] = useState([]);
-    const timestamp = dayjs().format('YYY-MM-DDTHH:mm:ss');
+    const timestamp = dayjs().format('YYYY-MM-DDTHH:mm:ss');
 
     useEffect(() => {
         if (USE_MOCK_DATA) {
@@ -116,9 +106,10 @@ function LoginPage() {
     };
 
   return (
-    <div className="landing">
-        <CssBaseline />
-        <AppProvider branding={BRANDING} theme={theme}>
+    <div className="landing">  
+        <Box sx={{ all: "unset" }}>
+        <CssBaseline>
+
             <Container maxWidth="sm"
             sx={{ display: "flex", flexDirection: "column", justifyContent: "center", height: "100vh" , paddingBottom: "10rem"}}>
             <Paper sx={{ padding: 3, display: "flex", flexDirection: "column", alignItems: "center", borderRadius: 3,
@@ -156,7 +147,9 @@ function LoginPage() {
                 </Box>
             </Paper>
             </Container>
-        </AppProvider>
+
+        </CssBaseline>
+        </Box>
         <Outlet/>
     </div>
   );
